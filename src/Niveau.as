@@ -1,25 +1,101 @@
 package 
 {
-	
+	import org.flashdevelop.utils.FlashConnect;
+	import flash.display.Sprite;
+	/// //////////////////////////// NORMALEMENT TOUS Y EST
 	/**
 	 * ...
 	 * @author Kirako79 & Kribouille
 	 */
 	public class Niveau
 	{
-		private var lesBriques:Array;
+		static public var lesBriques:Array;
+		static public var lesSpritesDesBriques:Array;
 		
 		public function Niveau()
 		{
-			
+			lesBriques = new Array(Config.HauteurMap);
+			var y:int = 0;
+			for (y = 0; y < Config.HauteurMap; y++)
+			{
+				lesBriques[y] = new Array(Config.LargeurMap);
+			}
+			lesSpritesDesBriques = new Array(Config.HauteurMap);
+			for (y = 0; y < Config.HauteurMap; y++)
+			{
+				lesSpritesDesBriques[y] = new Array(Config.LargeurMap);
+			}			
 		}
-		public function charger(idNiveau:Number)
+		/*
+		 * 
+		 * Retourne true si il y a bien un niveau qui a été chargé.
+		 * Le niveau 0 n'existe pas
+		 * 
+		 * Chaque numéro dans le tableau indique le rang de la brique
+		 * 
+		 * */
+		public function charger(idNiveau:Number):Boolean
 		{
-			
+			var ret:Boolean = true;
+			switch(idNiveau)
+			{
+				case 1:
+					lesBriques = [
+					[2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3],
+					[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0],
+					[0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0],
+					[0,0,0,0,0,0,1,1,3,3,1,3,3,1,1,0,0,0,0,0],
+					[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+					[0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,0,0],
+					[0,0,0,0,0,1,0,1,1,1,0,1,1,1,0,1,1,0,0,0],
+					[0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+					];
+					break;
+				default:
+					ret = false;
+					break;
+			}
+			return ret;
 		}
-		public function testCollision(x:Number, y:Number)
+		/*
+		 * 
+		 * retourne si true ou false la balle rebondis
+		 * 
+		 * */
+		public function testCollision(x:int, y:int):Boolean  /// il faut des int ici
 		{
-			
+			var collision:Boolean = false;
+			if (x < 0 || y < 0 || y >= Config.HauteurMap || x >= Config.LargeurMap) /// faut surtout pas sortir de la map sinon BOUM
+			{
+				return true;
+			}
+			if (lesBriques[y][x] > 0)
+			{
+				lesBriques[y][x] -= 1; /// on baisse le rang de la brique
+				if (lesBriques[y][x] == 0)
+				{
+					lesSpritesDesBriques[y][x].graphics.clear();
+				}
+				collision = true;
+			}
+			else
+			{
+				
+				collision = false;
+			}
+			return collision;
 		}
 	}
 	
