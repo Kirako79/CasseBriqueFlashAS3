@@ -65,7 +65,7 @@ package
 			
 			/// gestion des collisions avec les briques
 			/// en premier les points haut gauche droit et bas
-			//if (sonCosAngle >= 0) 															/// direction vers la droite
+			if (sonCosAngle >= 0) 															/// direction vers la droite
 			{
 				if (Main.getInstance().getNiveau().testCollision((saPositionX + sonRayon) / 10, (saPositionY) / 10) > 0)
 				{
@@ -74,7 +74,7 @@ package
 					recalculeVector();
 				}
 			}
-			//else 																			/// direction vers la gauche
+			else 																			/// direction vers la gauche
 			{
 				if (Main.getInstance().getNiveau().testCollision((saPositionX - sonRayon) / 10, (saPositionY) / 10) > 0)
 				{
@@ -84,7 +84,7 @@ package
 				}
 			}
 			
-			//if (sonSinAngle >= 0) 														/// direction vers le bas
+			if (sonSinAngle >= 0) 														/// direction vers le bas
 			{
 				if (Main.getInstance().getNiveau().testCollision((saPositionX) / 10, (saPositionY + sonRayon) / 10) > 0)
 				{
@@ -93,7 +93,7 @@ package
 					recalculeVector();
 				}
 			}
-			//else 																		/// direction vers le haut
+			else 																		/// direction vers le haut
 			{
 				if (Main.getInstance().getNiveau().testCollision((saPositionX) / 10, (saPositionY - sonRayon) / 10) > 0)
 				{
@@ -140,7 +140,7 @@ package
 				sonAngle = Math.PI - sonAngle;
 				recalculeVector();
 			}
-			if (((saPositionY - sonRayon) >= 200) || ((saPositionY + sonRayon) < 0))
+			if (((saPositionY + sonRayon) >= 200) || ((saPositionY - sonRayon) < 0))
 			{
 				sonAngle = -sonAngle;
 				recalculeVector();
@@ -156,6 +156,11 @@ package
 		public function getSprite():Sprite
 		{
 			return sonSprite;
+		}
+		
+		public function deleteSprite():void
+		{
+			sonSprite = null;
 		}
 		
 		private function recalculeVector():void

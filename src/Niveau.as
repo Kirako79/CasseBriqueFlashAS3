@@ -72,14 +72,15 @@ package
 		/*
 		 * 
 		 * retourne si true ou false la balle rebondis
+		 * s'occupe également d'endommager la brique si necessaire
 		 * 
 		 * */
-		public function testCollision(x:int, y:int):Boolean  /// il faut des int ici
+		public function testCollision(x:int, y:int):Boolean  /// il faut des int ici (bug 0x00002)
 		{
 			var collision:Boolean = false;
-			if (x < 0 || y < 0 || y >= Config.HauteurMap || x >= Config.LargeurMap) /// faut surtout pas sortir de la map sinon BOUM
+			if (x < 0 || y < 0 || y >= Config.HauteurMap || x >= Config.LargeurMap) /// faut pas sortir de la map
 			{
-				return true;
+				return true; 
 			}
 			if (lesBriques[y][x] > 0)
 			{

@@ -4,6 +4,11 @@ package
 	/**
 	 * ...
 	 * @author Kirako79 & Kribouille
+	 * 
+	 * Permet de stocker des valeurs centralisés comme un rassemblement de DEFINE
+	 * 
+	 * 
+	 * 
 	 */
 	public class Config 
 	{

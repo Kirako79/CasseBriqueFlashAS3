@@ -45,18 +45,18 @@ package
 		{
 			instance = this; /// permet un acces à cette instance depuis une autre classe
 			/// Configuration des timers
-			leTimer = new Timer(40, 0);
-			leTimer.start();
+			leTimer = new Timer(40, 0);		/// cadence le moteur des balles
+			leTimer.start();				/// démarrage
 			/// Manipulation des listener
-			removeEventListener(Event.ADDED_TO_STAGE, init);
+			removeEventListener(Event.ADDED_TO_STAGE, init);	/// code standard
 			//stage.focus = stage;
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove );
-			stage.addEventListener(MouseEvent.CLICK, onMouseLeftClick);
-			leTimer.addEventListener(TimerEvent.TIMER, onTriggeredTimer);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown ); ///
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove );///
+			stage.addEventListener(MouseEvent.CLICK, onMouseLeftClick); ///
+			leTimer.addEventListener(TimerEvent.TIMER, onTriggeredTimer); /// permet de faire bouger les balles toutes les 40 ms
 			/// CONSTRUCTION SPRITE
-			sprite_joueur = new Sprite();
-			addChild(sprite_joueur);
+			sprite_joueur = new Sprite();		/// création du sprite du joueur
+			addChild(sprite_joueur);			/// ajout à la scène
 			/// CONSTRUCTION DE TOUT LE RESTE
 			leJoueur = new Joueur(Config.LargeurFenetre / 2, Config.HauteurFenetre-Config.HauteurJoueur, sprite_joueur);
 			leNiveau = new Niveau();
@@ -75,13 +75,14 @@ package
 			render();
 		}
 		
-		private function motorBalles():void
+		private function motorBalles():void  /// permet de faire bouger les balles toutes les 40 ms
 		{
-			var toRender:Boolean = false;
+			var toRender:Boolean = false;	/// permet de savoir si l'assemblage des briques à changer afin de le réafficher
 			var lesDetruites:Array = new Array();
 			for each (var i:Balle in lesBalles )
 			{
-				if (i.getDestroy())
+				if (i.getDestroy()) /// si la balles nous dis qu'elle est détruite on l'ajoute dans la liste des balles détruites (on ne peut pas la supprimer tout de suite
+									/// car la liste des balles est en cours de lecture.
 				{
 					lesDetruites.push(i);
 				}
@@ -91,36 +92,38 @@ package
 				}
 			}
 			
-			for each (var a:Balle in lesDetruites)
+			for each (var a:Balle in lesDetruites)		/// et c'est ici qu'on supprime toutes les balles qui sont détruite
 			{
+				a.getSprite().graphics.clear(); /// on efface leur graphique, cette ligne permet de les effacer.
 				
-				a.getSprite().graphics.clear();
 				
 				removeChild(a.getSprite()); /// on balance le sprite
+				a.deleteSprite();
 				
 				lesBalles.slice(lesBalles.indexOf(a), 1); /// suppression de la balle en question /// on commence la suppression de un élement en commençant par l'index de celui à supprimer
+														//// cette commande permet de supprimer un certain nombre d'élément de la liste (second paramétre) à partir d'un index (premier parametre)
 			}
-			if (toRender) render();
+			if (toRender) render(); /// voir premiere ligne
 		}
 		
-		private function motorJoueur():void
+		private function motorJoueur():void    		/// pour plus tard
 		{
 			; /// rien pour l'instant
 		}
 		
 		private function onTriggeredTimer(event:TimerEvent):void
 		{
-			motorBalles();
+			motorBalles();	/// action des balles 25fois/s
 			motorJoueur(); 
 		}
 		
 		private function onMouseMove(event:MouseEvent):void
 		{
-			leJoueur.setPositionX(mouseX);
+			leJoueur.setPositionX(mouseX);	/// lorsqu'on bouge la souris, on donne la posx au joueur
 		}
 		private function onMouseLeftClick(event:MouseEvent):void
 		{
-			leJoueur.lancerBalle();
+			leJoueur.lancerBalle();			/// lorsqu'on clic n'importe où cette méthode est appelé
 		}
 		private function onKeyDown(event:KeyboardEvent):void
 		{
@@ -128,10 +131,10 @@ package
 		
 		static public function getInstance():Main
 		{
-			return instance;
+			return instance;					/// permet d'accéder à l'instance unique du main, afin de pourvoir faire la méthode ADDCHILD ailleur dans notre programme
 		}
 		
-		public function getNiveau():Niveau
+		public function getNiveau():Niveau 	/// permet à toutes les autres classes de récupérer le Niveau et ainsi de traiter les colisions, et faire d'autre bétise , etc ...
 		{
 			return leNiveau;
 		}
@@ -146,17 +149,15 @@ package
 				{
 					if (Niveau.lesBriques[y][x] > 0)
 					{
-						var a:Sprite = Niveau.lesSpritesDesBriques[y][x];
+						var a:Sprite = Niveau.lesSpritesDesBriques[y][x];	/// 
+						a.graphics.clear();
 						a.graphics.beginFill(Config.BriqueCouleur[Niveau.lesBriques[y][x]-1]); /// on recharge la couleur orrespondante
 						a.graphics.drawRect(x * Config.Brique_Largeur, y * Config.Brique_Hauteur, Config.Brique_Largeur-0.5, Config.Brique_Hauteur-0.5);
 						a.graphics.endFill();
-						//a.buttonMode = true;
-						//a.addEventListener(MouseEvent.MOUSE_OVER, onMouseMove);
-						addChild(a);
 					}
 					else
 					{
-						Niveau.lesSpritesDesBriques[y][x].graphics.clear();
+						Niveau.lesSpritesDesBriques[y][x].graphics.clear();	/// si l'emplacement est vide, on efface le sprite 
 					}
 				}
 			}
