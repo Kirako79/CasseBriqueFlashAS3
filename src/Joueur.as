@@ -26,11 +26,11 @@ package
 			sonSprite.y = saPositionY;
 		}
 		
-		public function getX():Number
+		public function getX():Number /// permet de faire les condition de rebonds de la balle sur cette la paddle
 		{
 			return saPositionX;
 		}
-		public function getY():Number
+		public function getY():Number /// elle aussi
 		{
 			return saPositionY;
 		}
@@ -38,7 +38,15 @@ package
 		public function lancerBalle():void
 		{
 			/// appel de la fonction static de la classe balle
-			Balle.create(saPositionX+(Config.LargeurJoueur/2),saPositionY-Config.Balle_RayonStandard,-Math.PI/2 + (Math.random()-0.5 * (Math.PI/2)),2.0);
+			if (Main.lesBalles.length == 0 && Data.Joueur_Vie > 0)
+			{
+				Data.Joueur_Vie -= 1;
+				Balle.create(saPositionX+(Config.LargeurJoueur/2),saPositionY-Config.Balle_RayonStandard,-Math.PI/2 + (Math.random()-0.5 * (Math.PI/2)),2.0);
+			}
+			else if (Data.Joueur_Vie == 0 && Main.lesBalles.length == 0)
+			{
+				/// fin du jeu, écran de submit score; /////////////////////
+			}
 		}
 		/*
 		 * Appelé depuis le Main quand la souris bouge (onMouseMove)

@@ -36,13 +36,11 @@ package
 			saPositionX = x;
 			saPositionY = y;
 			sonSprite = unSprite;
-			aDetruire = false;
 			
 			sonAngle = angle;
 			saVitesseAbsolu = vitesse;
 			recalculeVector();
 			
-			sonSprite = unSprite;
 			sonSprite.graphics.beginFill(Config.Balle_Couleur, 1);
 			sonSprite.graphics.drawCircle(0, 0, Config.Balle_RayonStandard); /// haut gauche
 			sonSprite.graphics.endFill();
@@ -124,7 +122,7 @@ package
 				}
 				else /// sortie de la balle par dessous
 				{
-					aDetruire = true; /// BANG
+					this.aDetruire = true; /// BANG
 				}
 			}
 			
@@ -134,7 +132,19 @@ package
 			sonSprite.x = saPositionX;
 			sonSprite.y = saPositionY;
 			
-			/// gérer rebonds
+			/// gérer rebonds sur les extrémité /// permet de gérer les erreur de 0.0 et -0.0
+			if ((saPositionX - sonRayon) < 0)
+			{
+				sonAngle = Math.PI - sonAngle;
+				recalculeVector();
+			}
+			if ((saPositionY - sonRayon) < 0)
+			{
+				sonAngle = -sonAngle;
+				recalculeVector();
+			}
+			
+			/*
 			if ((saPositionX + sonRayon) >= 200 || (saPositionX - sonRayon) < 0)
 			{
 				sonAngle = Math.PI - sonAngle;
@@ -144,13 +154,13 @@ package
 			{
 				sonAngle = -sonAngle;
 				recalculeVector();
-			}
+			}*/
 			return toRender;
 		}
 		
 		public function getDestroy():Boolean
 		{
-			return aDetruire;
+			return this.aDetruire;
 		}
 		
 		public function getSprite():Sprite

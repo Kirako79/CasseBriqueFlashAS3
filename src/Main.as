@@ -5,11 +5,13 @@ package
 	import flash.events.MouseEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
+	import flash.text.TextField;
 	import flash.utils.Timer;
 	import org.flashdevelop.utils.FlashConnect;
 	import Joueur;
 	import Niveau;
 	import Balle;
+	import Data;
 	import Config;
 	
 	/**
@@ -30,6 +32,10 @@ package
 		static public var lesBalles:Array;
 		/// TOUS LES TIMERS
 		private var leTimer:Timer;
+		/// Version 2
+		private var afficheur_score:TextField;
+		private var afficheur_vie:TextField;
+		private var sprite_cadre:Sprite;
 		
 		public function Main():void 
 		{
@@ -44,6 +50,15 @@ package
 		private function init(e:Event = null):void 
 		{
 			instance = this; /// permet un acces à cette instance depuis une autre classe
+			/// contruction d'un cadre pour bien voir les limites de la map
+			sprite_cadre = new Sprite();
+            sprite_cadre.graphics.lineStyle(1, 0x109090, 1);
+            sprite_cadre.graphics.moveTo(0, 0);
+            sprite_cadre.graphics.lineTo(Config.LargeurFenetre, 0);
+            sprite_cadre.graphics.lineTo(Config.LargeurFenetre, Config.HauteurFenetre);
+            sprite_cadre.graphics.lineTo(0, Config.HauteurFenetre);
+            sprite_cadre.graphics.lineTo(0, 0);
+			addChild(sprite_cadre);
 			/// Configuration des timers
 			leTimer = new Timer(40, 0);		/// cadence le moteur des balles
 			leTimer.start();				/// démarrage
@@ -73,6 +88,22 @@ package
 			}
 			/// un petit coup de render avant de commencer
 			render();
+			/// Affichage des score après le render pour que le texte soit visible peu importe les briques présentes;
+			afficheur_score = new TextField();
+			addChild(afficheur_score);
+			afficheur_score.x = 0;
+			afficheur_score.y = 0;
+			afficheur_score.scaleX = 1.0;
+			afficheur_score.textColor = 0xf0f0f0;
+			
+			afficheur_vie = new TextField();
+			addChild(afficheur_vie);
+			afficheur_vie.x = 0;
+			afficheur_vie.y = 10;
+			afficheur_vie.scaleX = 1.0;
+			afficheur_vie.textColor = 0xf07070;
+			
+			actualiseHUD();
 		}
 		
 		private function motorBalles():void  /// permet de faire bouger les balles toutes les 40 ms
@@ -84,6 +115,7 @@ package
 				if (i.getDestroy()) /// si la balles nous dis qu'elle est détruite on l'ajoute dans la liste des balles détruites (on ne peut pas la supprimer tout de suite
 									/// car la liste des balles est en cours de lecture.
 				{
+					//FlashConnect.trace("Balle perdu detectée");
 					lesDetruites.push(i);
 				}
 				else
@@ -94,14 +126,15 @@ package
 			
 			for each (var a:Balle in lesDetruites)		/// et c'est ici qu'on supprime toutes les balles qui sont détruite
 			{
+				/// attention il s'agit de splice et pas de slice !!!!!!!
+				lesBalles.splice(lesBalles.indexOf(a), 1); /// suppression de la balle en question /// on commence la suppression de un élement en commençant par l'index de celui à supprimer
+														//// cette commande permet de supprimer un certain nombre d'élément de la liste (second paramétre) à partir d'un index (premier parametre)
+				//FlashConnect.trace("Demarrage de la suppression en cours");
 				a.getSprite().graphics.clear(); /// on efface leur graphique, cette ligne permet de les effacer.
 				
+				stage.removeChild(a.getSprite()); /// on balance le sprite
 				
-				removeChild(a.getSprite()); /// on balance le sprite
 				a.deleteSprite();
-				
-				lesBalles.slice(lesBalles.indexOf(a), 1); /// suppression de la balle en question /// on commence la suppression de un élement en commençant par l'index de celui à supprimer
-														//// cette commande permet de supprimer un certain nombre d'élément de la liste (second paramétre) à partir d'un index (premier parametre)
 			}
 			if (toRender) render(); /// voir premiere ligne
 		}
@@ -143,9 +176,9 @@ package
 		{
 			//FlashConnect.trace("Render");
 			var x:int, y:int;
-			for (x = 0; x < 20; x++)
+			for (x = 0; x < Config.LargeurMap; x++)
 			{
-				for (y = 0; y < 19; y++)
+				for (y = 0; y < Config.HauteurMap; y++)
 				{
 					if (Niveau.lesBriques[y][x] > 0)
 					{
@@ -161,6 +194,15 @@ package
 					}
 				}
 			}
+		}
+		
+		/**
+		 * permet d'actualiser toute les données dans l'HUD
+		 */
+		public function actualiseHUD():void
+		{
+			afficheur_score.text = Data.Joueur_Score.toString();
+			afficheur_vie.text = Data.Joueur_Vie.toString();
 		}
 		
 	}

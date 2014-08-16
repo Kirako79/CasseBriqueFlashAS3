@@ -41,8 +41,8 @@ package
 			{
 				case 1:
 					lesBriques = [
-					[2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3],
-					[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 					[0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],
 					[0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0],
@@ -50,7 +50,7 @@ package
 					[0,0,0,0,0,0,1,1,3,3,1,3,3,1,1,0,0,0,0,0],
 					[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
 					[0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,0,0],
-					[0,0,0,0,0,1,0,1,1,1,0,1,1,1,0,1,1,0,0,0],
+					[0,0,0,0,1,1,0,1,1,1,0,1,1,1,0,1,1,0,0,0],
 					[0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0],
 					[0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],
 					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -78,13 +78,15 @@ package
 		public function testCollision(x:int, y:int):Boolean  /// il faut des int ici (bug 0x00002)
 		{
 			var collision:Boolean = false;
-			if (x < 0 || y < 0 || y >= Config.HauteurMap || x >= Config.LargeurMap) /// faut pas sortir de la map
+			if (x < 0 || y<  0 || y >= Config.HauteurMap || x >= Config.LargeurMap) /// faut pas sortir de la map
 			{
 				return true; 
 			}
 			if (lesBriques[y][x] > 0)
 			{
 				lesBriques[y][x] -= 1; /// on baisse le rang de la brique
+				Data.Joueur_Score += 10;
+				Main.getInstance().actualiseHUD();
 				if (lesBriques[y][x] == 0)
 				{
 					lesSpritesDesBriques[y][x].graphics.clear();
